@@ -5,7 +5,6 @@ import java.util.Optional;
 
 import com.example.spring.App.model.Entity.UsersEntity;
 import org.springframework.data.mongodb.repository.MongoRepository;
-import org.springframework.data.mongodb.repository.Query;
 import org.springframework.stereotype.Repository;
 
 @Repository
