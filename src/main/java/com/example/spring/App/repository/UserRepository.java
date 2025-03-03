@@ -35,10 +35,6 @@ public interface UserRepository extends MongoRepository<UsersEntity, String> {
     // save: บันทึก (insert หรือ update) ข้อมูล
     <S extends UsersEntity> S save(S entity);  // MongoRepository มีให้แล้ว
 
-    // ตัวอย่างการใช้ @Query เพื่อค้นหาผู้ใช้โดย Name และ Email
-    @Query("{ 'name': ?0, 'email': ?1 }")
-    List<UsersEntity> findByNameAndEmail(String name, String email);
-
     // ตัวอย่างการค้นหาโดยใช้ findAllBy และคำสั่งพิเศษ
     List<UsersEntity> findAllByNameContainingIgnoreCase(String name);
 }
