@@ -11,8 +11,6 @@ public class UserDTO {
     private String name;
     private String email;
     private String password;
-
-    // ✅ Nested Class - UserDTO (อยู่ใน ResponseUserDTO)
     @Getter
     @Setter
     public static class ResponseUserDTO {

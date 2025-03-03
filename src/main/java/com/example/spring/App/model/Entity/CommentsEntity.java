@@ -16,7 +16,7 @@ public class CommentsEntity {
     private String id;
     private String name;
     private String email;
-    private String movie_id; // ✅ ใช้ ObjectId แทน String
+    private String movie_id;
     private String text;
     private String date;
 }
