@@ -3,8 +3,7 @@ package com.example.spring.App.service;
 import com.example.spring.App.model.DTO.UserDTO;
 import com.example.spring.App.model.Entity.UsersEntity;
 import com.example.spring.App.repository.UserRepository;
-import com.example.spring.App.utils.Utils; // ✅ Import Utils
-
+import com.example.spring.App.utils.Utils;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
@@ -21,38 +20,47 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-    public UserDTO.ResponseUserDTO getAllUsers() {
+    public UserDTO.ResponseUserDTO fetchAllUsers() {
         try {
-            // ✅ เรียก Utils แบบ static
-            List<UserDTO> userDTOList = userRepository.findAll().stream()
+            List<UserDTO> users = userRepository.findAll().stream()
                     .map(Utils::convertToDTO)
                     .collect(Collectors.toList());
 
-            return userDTOList.isEmpty()
-                    ? Utils.getUserResponse(Collections.emptyList(), "User not found", "200")
-                    : Utils.getUserResponse(userDTOList, "Successfully", "200");
+            if (users.isEmpty()) {
+                return buildUserResponse(Collections.emptyList(), "No users found", "200");
+            }
+
+            return buildUserResponse(users, "Fetch successful", "200");
         } catch (Exception e) {
-            throw new RuntimeException("ไม่สามารถดึงข้อมูลผู้ใช้ได้: " + e.getMessage(), e);
+            throw new RuntimeException("Unable to retrieve users: " + e.getMessage(), e);
         }
     }
 
-    public UserDTO.ResponseUserDTO getUserById(String id) {
+    public UserDTO.ResponseUserDTO fetchUserById(String id) {
         try {
             if (id == null || id.isEmpty()) {
-                return Utils.getUserResponse(Collections.emptyList(), "ID is required", "400");
+                return buildUserResponse(Collections.emptyList(), "User ID is required", "400");
             }
 
-            Optional<UsersEntity> userOptional = userRepository.findById(id);
+            Optional<UsersEntity> userEntity = userRepository.findById(id);
 
-            if (userOptional.isEmpty()) {
-                return Utils.getUserResponse(Collections.emptyList(), "User not found", "200");
+            if (userEntity.isEmpty()) {
+                return buildUserResponse(Collections.emptyList(), "User not found", "200");
             }
 
-            List<UserDTO> userList = List.of(Utils.convertToDTO(userOptional.get()));
-            return Utils.getUserResponse(userList, "Successfully", "200");
+            List<UserDTO> user = List.of(Utils.convertToDTO(userEntity.get()));
+            return buildUserResponse(user, "Fetch successful", "200");
 
         } catch (Exception e) {
-            throw new RuntimeException("ไม่สามารถค้นหาผู้ใช้โดย ID: " + e.getMessage(), e);
+            throw new RuntimeException("Unable to find user by ID: " + e.getMessage(), e);
         }
+    }
+
+    public UserDTO.ResponseUserDTO buildUserResponse(List<UserDTO> users, String message, String status) {
+        UserDTO.ResponseUserDTO response = new UserDTO.ResponseUserDTO();
+        response.setUserDTO(users);
+        response.setMessage(message);
+        response.setStatus(status);
+        return response;
     }
 }

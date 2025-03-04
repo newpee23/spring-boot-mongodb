@@ -25,7 +25,8 @@ public class UserController {
     @GetMapping("/")
     public ResponseEntity<Object> getAllUserList() {
         try {
-            UserDTO.ResponseUserDTO users = userService.getAllUsers();
+            UserDTO.ResponseUserDTO users = userService.fetchAllUsers();
+            
             return StatusOk.Response(users);
         } catch (Exception e) {
             return InternalServerErrorException.InternalServerError(e.getMessage());
@@ -35,11 +36,12 @@ public class UserController {
     @GetMapping("/user")
     public ResponseEntity<Object> getUserById(@RequestParam String id) {
         try {
-            UserDTO.ResponseUserDTO user = userService.getUserById(id);
+            UserDTO.ResponseUserDTO user = userService.fetchUserById(id);
             
             if (user.getStatus().equals("400")) {
                 return BadRequestException.BadRequest("ID is required");
             }
+
             return StatusOk.Response(user);
         } catch (Exception e) {
             return InternalServerErrorException.InternalServerError(e.getMessage());
