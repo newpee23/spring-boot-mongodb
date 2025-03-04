@@ -56,6 +56,23 @@ public class UserService {
         }
     }
 
+    public UserDTO.ResponseUserDTO addUser(UserDTO userDTO) {
+        try {
+       
+            UsersEntity userEntity = new UsersEntity();
+            userEntity.setName(userDTO.getName());
+            userEntity.setEmail(userDTO.getEmail());
+            userEntity.setPassword(userDTO.getPassword()); // Ensure to handle passwords securely in a real-world scenario
+
+            UsersEntity savedUserEntity = userRepository.save(userEntity);
+
+            UserDTO savedUserDTO = Utils.convertToDTO(savedUserEntity);
+            return buildUserResponse(List.of(savedUserDTO), "User added successfully", "201");
+        } catch (Exception e) {
+            throw new RuntimeException("Unable to add user: " + e.getMessage(), e);
+        }
+    }
+
     public UserDTO.ResponseUserDTO buildUserResponse(List<UserDTO> users, String message, String status) {
         UserDTO.ResponseUserDTO response = new UserDTO.ResponseUserDTO();
         response.setUserDTO(users);
